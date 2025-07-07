@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Dashboard</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+
+        .sidebar {
+            background-color: #333;
+            color: #fff;
+            width: 200px;
+            height: 700px;
+            padding: 20px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .sidebar a:hover {
+            background-color: #555;
+        }
+
+        .content {
+            padding: 20px;
+            flex: 1;
+        }
+
+        .dashboard {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            width: 45%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .card h2 {
+            margin-bottom: 10px;
+        }
+
+        .card i {
+            font-size: 3em;
+            color: #337ab7;
+            margin-bottom: 10px;
+        }
+
+        .details {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: none; /* Hide details by default */
+        }
+
+        .details h3 {
+            margin-bottom: 10px;
+        }
+        .active {
+            background-color: lightblue;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        /* CSS for Edit Vacancy Form */
+        #edit-vacancy-form {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+        }
+
+        #edit-vacancy-form h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        #edit-vacancy-form label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        #edit-vacancy-form input[type="text"],
+        #edit-vacancy-form input[type="date"],
+        #edit-vacancy-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+        }
+
+        #edit-vacancy-form textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        #edit-vacancy-form button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        #edit-vacancy-form button:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+        #edit-vacancy-form #cancel-edit {
+            background-color: #f44336; /* Red */
+        }
+
+        #edit-vacancy-form #cancel-edit:hover {
+            background-color: #d32f2f; /* Darker red */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Company Panel</h2>
+        <ul>
+            <li><a href="#" id="dashboard-link">Dashboard</a></li>
+            <li><a href="#" id="vacancies-link">Vacancies Management</a></li>
+            <li><a href="#" id="applications-link">Applications Management</a></li>
+            <li><a href="index.html">Logout</a></li>
+        </ul>
+    </div>
+    <div class="content">
+        <h1>Dashboard</h1>
+        <div class="dashboard">
+            <div class="card" id="vacancies-card">
+                <h2>Total Vacancies</h2>
+                <i class="fas fa-briefcase"></i>
+                <p>4</p>
+            </div>
+            <div class="card" id="applications-card">
+                <h2>Applications</h2>
+                <i class="fas fa-file"></i>
+                <p>3</p>
+            </div>
+        </div>
+            
+        <div class="details" id="vacancies-details">
+            <h3>Vacancies Details</h3>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#addVacancyModal">Add Vacancy</button>
+            
+            <div id="edit-vacancy-form" style="display: none;">
+                <h2>Edit Vacancy</h2>
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title"><br><br>
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea><br><br>
+
+                <label for="company">Company:</label>
+                <input type="text" id="company" name="company"><br><br>
+
+                <label for="posted_date">Posted Date:</label>
+                <input type="date" id="posted_date" name="posted_date"><br><br>
+
+                <button type="submit" id="update-vacancy" class="btn btn-success">Update Vacancy</button>
+                <button type="button" id="cancel-edit" class="btn btn-danger">Cancel</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Company</th>
+                        <th>Posted Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>PHP Web Development</td>
+                        <td>2-7 years | Not Disclosed Office Job Title: coco cola. Location: Bengaluru. Job Type: Full Time</td>
+                        <td>Travelopro</td>
+                        <td>01/08/2024</td>
+                        <td>
+                            <button class="edit-vacancy-button" data-vacancy-id="1" data-toggle="modal" data-target="#editVacancyModal">Edit</button>
+                            <button>Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Web Development</td>
+                        <td>0-5 years | Not Disclosed Remote Job Title: Personal Cook. Location: Ahmedabad. Job Type: F...</td>
+                        <td>Personal Cook</td>
+                        <td>31/07/2024</td>
+                        <td>
+                            <button class="edit-vacancy-button" data-vacancy-id="2" data-toggle="modal" data-target="#editVacancyModal">Edit</button>
+                            <button>Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Frontend Developer</td>
+                        <td>3-5 Yrs | Not disclosed Remote Intership location: Mysuru Job type: Part Time Skills: Html, Css,....</td>
+                        <td>Cliff Solution</td>
+                        <td>28/07/2024</td>
+                        <td>
+                            <button class="edit-vacancy-button" data-vacancy-id="3" data-toggle="modal" data-target="#editVacancyModal">Edit</button>
+                            <button>Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Data Scientist</td>
+                        <td>0-3 years | Not Disclosed Remote Job Title: Data scientist Location: Ahmedabad. Job Type: Fu...</td>
+                        <td>Swiggy</td>
+                        <td>17/07/2024</td>
+                        <td>
+                            <button class="edit-vacancy-button" data-vacancy-id="4" data-toggle="modal" data-target="#editVacancyModal">Edit</button>
+                            <button>Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        <div class="details" id="applications-details">
+            <h3>Applications Details</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Applicant Name</th>
+                        <th>Job Title</th>
+                        <th>Application Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>John Doe</td>
+                        <td>Software Engineer</td>
+                        <td>2023-10-26</td>
+                        <td>Pending</td>
+                        <td>
+                            <button>View</button>
+                            <button>Approve</button>
+                            <button>Reject</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Jane Doe</td>
+                        <td>Software Engineer</td>
+                        <td>2023-10-27</td>
+                        <td>Pending</td>
+                        <td>
+                            <button>View</button>
+                            <button>Approve</button>
+                            <button>Reject</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal for Add Vacancy -->
+    <div class="modal fade" id="addVacancyModal" tabindex="-1" role="dialog" aria-labelledby="addVacancyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addVacancyModalLabel">Add Vacancy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addVacancyForm">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company:</label>
+                            <input type="text" class="form-control" id="company" name="company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="posted_date">Posted Date:</label>
+                            <input type="date" class="form-control" id="posted_date" name="posted_date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" form="addVacancyForm">Add Vacancy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Edit Vacancy -->
+    <div class="modal fade" id="editVacancyModal" tabindex="-1" role="dialog" aria-labelledby="editVacancyModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editVacancyModalLabel">Edit Vacancy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editVacancyForm">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="company">Company:</label>
+                            <input type="text" class="form-control" id="company" name="company" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="posted_date">Posted Date:</label>
+                            <input type="date" class="form-control" id="posted_date" name="posted_date" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" form="editVacancyForm">Update Vacancy</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Get the elements for the sidebar links and details sections
+        const vacanciesLink = document.getElementById('vacancies-link');
+        const applicationsLink = document.getElementById('applications-link');
+        const vacanciesCard = document.getElementById('vacancies-card');
+        const applicationsCard = document.getElementById('applications-card');
+        const vacanciesDetails = document.getElementById('vacancies-details');
+        const applicationsDetails = document.getElementById('applications-details');
+        const createVacancyButton = document.getElementById('create-vacancy');
+        const editVacancyForm = document.getElementById('edit-vacancy-form');
+        const updateVacancyButton = document.getElementById('update-vacancy');
+        const cancelEditButton = document.getElementById('cancel-edit');
+
+        // Function to show details and hide others
+        function showDetails(detailsId, cardId) {
+            vacanciesDetails.style.display = 'none';
+            applicationsDetails.style.display = 'none';
+            document.getElementById(detailsId).style.display = 'block';
+
+            // Highlight the clicked card
+            vacanciesCard.classList.remove('active');
+            applicationsCard.classList.remove('active');
+            document.getElementById(cardId).classList.add('active');
+        }
+
+        // Add event listeners to sidebar links
+        vacanciesLink.addEventListener('click', function() {
+            showDetails('vacancies-details', 'vacancies-card');
+        });
+
+        applicationsLink.addEventListener('click', function() {
+            showDetails('applications-details', 'applications-card');
+        });
+
+        // Add event listeners to cards
+        vacanciesCard.addEventListener('click', function() {
+            showDetails('vacancies-details', 'vacancies-card');
+        });
+
+        applicationsCard.addEventListener('click', function() {
+            showDetails('applications-details', 'applications-card');
+        });
+
+        // Add event listener to the Create Vacancy button
+        createVacancyButton.addEventListener('click', function() {
+            // Show the Edit Vacancy form
+            editVacancyForm.style.display = 'block';
+            // Hide the Add Vacancy button
+            createVacancyButton.style.display = 'none';
+        });
+
+        // Add event listener to the Update Vacancy button
+        updateVacancyButton.addEventListener('click', function() {
+            // Implement logic for updating the vacancy (e.g., send data to server)
+            alert("You clicked Update Vacancy!");
+
+            // Hide the Edit Vacancy form
+            editVacancyForm.style.display = 'none';
+            // Show the Add Vacancy button
+            createVacancyButton.style.display = 'block';
+        });
+
+        // Add event listener to the Cancel Edit button
+        cancelEditButton.addEventListener('click', function() {
+            // Hide the Edit Vacancy form
+            editVacancyForm.style.display = 'none';
+            // Show the Add Vacancy button
+            createVacancyButton.style.display = 'block';
+        });
+
+        // Add event listeners to the Edit Vacancy buttons
+        const editVacancyButtons = document.querySelectorAll('.edit-vacancy-button');
+        editVacancyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the vacancy ID from the data attribute
+                const vacancyId = this.dataset.vacancyId;
+
+                // Populate the form with data from the vacancy (you'll need to get this data from your backend)
+                const vacancyData = {
+                    title: "PHP Web Development",
+                    description: "2-7 years | Not Disclosed Office Job Title: coco cola. Location: Bengaluru. Job Type: Full Time",
+                    company: "Travelopro",
+                    postedDate: "2024-08-01"
+                };
+
+                // Populate the form fields
+                document.getElementById("title").value = vacancyData.title;
+                document.getElementById("description").value = vacancyData.description;
+                document.getElementById("company").value = vacancyData.company;
+                document.getElementById("posted_date").value = vacancyData.postedDate;
+
+                // Show the Edit Vacancy form
+                editVacancyForm.style.display = 'block';
+                // Hide the Add Vacancy button
+                createVacancyButton.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>
